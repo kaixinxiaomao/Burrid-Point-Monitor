@@ -18,7 +18,7 @@ namespace BurriedPointMonitor.Test
       var rst = new List<int>();
       var remain = TotalMs;
       var random = new System.Random();
-      rst.Add(random.Next(MinMs, MaxMs)); //to void all runner's first request to be sent out at same time, SleepRunner will sleep for rst[0] ms before sending out first request.
+      rst.Add(random.Next(500, 5000)); //to void all runner's first request to be sent out at same time, SleepRunner will sleep for rst[0] ms before sending out first request.
       while (remain > 0)
       {
         var cur = random.Next(MinMs, MaxMs);
