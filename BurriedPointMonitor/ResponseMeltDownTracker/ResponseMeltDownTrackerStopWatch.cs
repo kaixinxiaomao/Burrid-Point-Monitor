@@ -6,9 +6,9 @@ using SumTotal.Framework.Core.Contracts.Logging;
 
 namespace SumTotal.Framework.Logging
 {
-  public class ResponseDurationTrackerStopWatch : ResponseTrackerStopWatch
+  public class ResponseMeltDownTrackerStopWatch : ResponseTrackerStopWatch
   {
-    public ResponseDurationTrackerStopWatch(ILogger logger) : base(logger) 
+    public ResponseMeltDownTrackerStopWatch(ILogger logger) : base(logger) 
     {
       Duration = -1;
     }

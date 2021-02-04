@@ -10,7 +10,7 @@ namespace SumTotal.Framework.Core.Contracts.Logging
   /// </summary>
   public interface ILogger
   {
-    void LogDebug(string message);
+    void Log(string message);
 
     void LogInfo(string message);
 
@@ -19,6 +19,8 @@ namespace SumTotal.Framework.Core.Contracts.Logging
     void LogTraffic(string message);
 
     void LogTestEvent(string message);
+
+    void LogTestEventInline(string message);
 
   }
 }

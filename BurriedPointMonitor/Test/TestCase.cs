@@ -4,10 +4,11 @@ using System.Text;
 using SumTotal.Framework.Core.Contracts.Logging;
 using SumTotal.Framework.Logging;
 using System.Threading;
+using BurriedPointMonitor.Test.Contracts;
 
 namespace BurriedPointMonitor.Test
 {
-  public abstract class TestCase<T, T1, T2> where T : ResponseTrackerStopWatch where T1 : ResponseTrackerConfig where T2 : ResponseTracker<T, T1> 
+  public abstract class TestCase<T, T1, T2> where T : ResponseTrackerStopWatch where T1 : ResponseTrackerConfig where T2 : ResponseTracker<T, T1>
   {
     public TestCase(SimpleLogger logger)
     {
@@ -20,6 +21,7 @@ namespace BurriedPointMonitor.Test
 
     protected abstract IList<int[]> GenerateRunnerInput();
     protected abstract T2 ProvideTracker();
+    protected abstract IRunner CreateRunner(int runnerId, int[] intervals, T2 tracker, ILogger logger);
 
 
     public void Execute()
@@ -32,7 +34,7 @@ namespace BurriedPointMonitor.Test
       for (var i = 0; i < tests.Count; i++)
       {
         var t = tests[i];
-        var runner0 = new SleepRunner<T, T1, T2>(
+        var runner0 = CreateRunner(
           i,
           t,
           tracker,

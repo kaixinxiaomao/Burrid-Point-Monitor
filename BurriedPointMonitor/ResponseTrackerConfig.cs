@@ -12,7 +12,7 @@ namespace SumTotal.Framework.Logging
   public abstract class ResponseTrackerConfig : IResponseTrackerConfig
   {
     public string CallerKey { get; set; }
-    public float QPS { get; set; }
+    public float LogsPerSecond { get; set; }
     public int BucketSize { get; set; }
 
     public int TimeOutInSecond { get; set; }
@@ -21,7 +21,7 @@ namespace SumTotal.Framework.Logging
     public ResponseTrackerConfig(string key, float qps, int bucketSize, int timeOutInSecond, ILogger logger)
     {
       CallerKey = key;
-      QPS = qps;
+      LogsPerSecond = qps;
       BucketSize = bucketSize;
       TimeOutInSecond = timeOutInSecond;
       Logger = logger;

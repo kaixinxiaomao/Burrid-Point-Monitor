@@ -4,21 +4,16 @@ using System.Text;
 using System.Threading;
 using SumTotal.Framework.Core.Contracts.Logging;
 using SumTotal.Framework.Logging;
+using BurriedPointMonitor.Test.Contracts;
 
 namespace BurriedPointMonitor.Test
 {
-  class SleepRunner<T, T1, T2> where T : ResponseTrackerStopWatch where T1 : ResponseTrackerConfig where T2 : ResponseTracker<T, T1>
+  public class SleepRunner : Runner<ResponseDurationTrackerStopWatch, ResponseDurationTrackerConfig, ResponseDurationTracker<ResponseDurationTrackerStopWatch, ResponseDurationTrackerConfig>> 
   {
-    public SleepRunner(int runnerId, int[] intervals, T2 tracker, ILogger logger)
+    public SleepRunner(int runnerId, int[] intervals, ResponseDurationTracker<ResponseDurationTrackerStopWatch, ResponseDurationTrackerConfig> tracker, ILogger logger) : base(runnerId, intervals, tracker, logger)
     {
-      RunnerID = runnerId;
-      Intervals = intervals;
-      Tracker = tracker;
-      Logger = logger;
     }
-    private static ILogger Logger;
-
-    public void RunTest()
+    override public void RunTest()
     {
       Thread.Sleep(Intervals[0]);
       for (var i = 1; i < Intervals.Length; i++)
@@ -39,12 +34,8 @@ namespace BurriedPointMonitor.Test
         }
         Logger.LogTraffic("Runner " + RunnerID + "'s request No. " + i + "  received its response.");
       }
-      Logger.LogTestEvent("Runner " + RunnerID + "finished its test.");
+      Logger.LogTestEvent("Runner " + RunnerID + " finished its test.");
     }
 
-
-    private int[] Intervals;
-    public int RunnerID;
-    private T2 Tracker;
   }
 }

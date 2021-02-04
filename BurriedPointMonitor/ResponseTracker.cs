@@ -10,10 +10,11 @@ namespace SumTotal.Framework.Logging
   /// </summary>
   public abstract class ResponseTracker<T, T1> : IResponseTracker<T, T1> where T : ResponseTrackerStopWatch where T1 : ResponseTrackerConfig
   {
-    private static SimpleLogger Logger = new SimpleLogger();
+    protected static ILogger Logger;
     public ResponseTracker(T1 config)
     {
       Configue = config;
+      Logger = config.Logger;
     }
 
     // leaking bucket implementation
@@ -26,6 +27,7 @@ namespace SumTotal.Framework.Logging
         while (LeakyBucket.First != null && LeakyBucket.First.Value.StartTime < BottomOfBucket.Value.StartTime && (int)(DateTime.Now - LeakyBucket.First.Value.StartTime).TotalSeconds > Configue.TimeOutInSecond)
         {
           LeakyBucket.First.Value.Timeout();
+          OnTimeOut();
           LeakyBucketHash.Remove(LeakyBucket.First.Value.StartTime);
           LeakyBucket.RemoveFirst();
           LastLogTime = DateTime.Now;
@@ -117,6 +119,14 @@ namespace SumTotal.Framework.Logging
         {
           node = LeakyBucketHash[stopWatch.StartTime];
           LeakyBucketHash.Remove(stopWatch.StartTime);
+          if ((int)(DateTime.Now - node.Value.StartTime).TotalSeconds > Configue.TimeOutInSecond)
+          {
+            OnTimeOut();
+          }
+          else
+          {
+            OnFinish();
+          }
 
           if (node.Value.StartTime < BottomOfBucket.Value.StartTime)  // in case current request already been leaked
           {
@@ -124,6 +134,7 @@ namespace SumTotal.Framework.Logging
             LeakyBucket.Remove(node);
             LastLogTime = DateTime.Now;
           }
+
         }
       }
       if (node == null)
@@ -132,6 +143,7 @@ namespace SumTotal.Framework.Logging
       }
 
       node.Value.Stop(null);    // stop the located stopWatch
+      
       if (bLogged)
       {
         Logger.LogInfo(">>> Log upon receiving leaked response, sent at " + node.Value.StartTime.Ticks);
@@ -142,10 +154,16 @@ namespace SumTotal.Framework.Logging
 
     public abstract T CreateStopWatch(T1 config);
 
+    protected virtual void OnTimeOut()
+    { }
+
+    protected virtual void OnFinish()
+    { }
+
 
     private int GetLeakingSince(DateTime end)
     {
-      return (int)((DateTime.Now - end).TotalSeconds * Configue.QPS);
+      return (int)((DateTime.Now - end).TotalSeconds * Configue.LogsPerSecond);
     }
 
 

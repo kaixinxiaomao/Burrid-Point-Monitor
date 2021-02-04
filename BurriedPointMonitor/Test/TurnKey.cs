@@ -11,8 +11,19 @@ namespace BurriedPointMonitor.Test
     private static SimpleLogger _Logger = new SimpleLogger();
     static void Main(string[] args)
     {
-      //new ResponseDurationTrackerCorrectNessTest(_Logger).Execute();
-      new ResponseDurationTrackerPressureTest(_Logger).Execute();
+      /*
+       * 
+      var perfTest = new ResponseDurationTrackerPressureTest(_Logger);
+      _Logger.LogLevel = LogLevels.Traffic;
+      perfTest.DisableMonitor();
+      perfTest.Execute();
+
+       * */
+
+
+      _Logger.LogLevel = LogLevels.TestEvent;
+      new ResponseMeltDownTrackerPressureTest(_Logger).Execute();
     }
+
   }
 }
